@@ -6,8 +6,9 @@ No account. No sample listings.
 
 ## Pages
 
-- `index.html` — landing: **List** and **View property**
+- `index.html` — landing: **List**, **Clients**, and **View property**
 - `list.html` — post a house or land demand
+- `clients.html` — clients write a free-text requirement
 - `view.html` — live list, filters, auto-refresh
 
 ## How listings are stored

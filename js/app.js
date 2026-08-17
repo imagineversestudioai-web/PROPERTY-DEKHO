@@ -43,6 +43,31 @@ async function deleteDemand(id) {
   await fetch(`/api/demands/${encodeURIComponent(id)}`, { method: "DELETE" });
 }
 
+async function loadClients() {
+  try {
+    const res = await fetch("/api/clients");
+    if (!res.ok) return [];
+    const data = await res.json();
+    return Array.isArray(data) ? data : [];
+  } catch {
+    return [];
+  }
+}
+
+async function addClient(client) {
+  const res = await fetch("/api/clients", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(client),
+  });
+  if (!res.ok) throw new Error("Could not post requirement");
+  return res.json();
+}
+
+async function deleteClient(id) {
+  await fetch(`/api/clients/${encodeURIComponent(id)}`, { method: "DELETE" });
+}
+
 function demandTitle(demand) {
   const written = String(demand.location || demand.city || "").trim();
   if (written && written.toLowerCase() !== "lucknow") return written;
@@ -272,7 +297,95 @@ function initViewPage() {
   refresh();
 }
 
+function renderClientCard(item) {
+  const title = item.name || item.location || "Client requirement";
+  const sub = [item.location, item.contact].filter(Boolean).join(" · ");
+  return `
+    <article class="card" data-id="${escapeHtml(item.id)}">
+      <div class="card-top">
+        <div>
+          <p class="tag">Client</p>
+          <h2>${escapeHtml(title)}</h2>
+          ${sub ? `<p class="sub">${escapeHtml(sub)}</p>` : ""}
+        </div>
+        <button class="btn btn-danger" type="button" data-delete="${escapeHtml(item.id)}">Remove</button>
+      </div>
+      ${item.requirement ? `<p class="note">${escapeHtml(item.requirement)}</p>` : ""}
+    </article>
+  `;
+}
+
+function initClientsPage() {
+  const form = document.getElementById("client-form");
+  const listEl = document.getElementById("client-list");
+  if (!form || !listEl) return;
+
+  const countEl = document.getElementById("client-count");
+  const emptyEl = document.getElementById("client-empty");
+  const posted = document.getElementById("client-posted");
+  const error = document.getElementById("client-error");
+  let cache = [];
+
+  function apply() {
+    if (countEl) {
+      countEl.textContent = `${cache.length} live requirement${cache.length === 1 ? "" : "s"}`;
+    }
+    if (!cache.length) {
+      listEl.innerHTML = "";
+      if (emptyEl) emptyEl.hidden = false;
+      return;
+    }
+    if (emptyEl) emptyEl.hidden = true;
+    listEl.innerHTML = cache.map(renderClientCard).join("");
+  }
+
+  async function refresh() {
+    cache = await loadClients();
+    apply();
+  }
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const data = new FormData(form);
+    const client = {
+      name: String(data.get("name") || "").trim(),
+      contact: String(data.get("contact") || "").trim(),
+      location: String(data.get("location") || "").trim(),
+      requirement: String(data.get("requirement") || "").trim(),
+    };
+    addClient(client)
+      .then(() => {
+        form.reset();
+        if (posted) posted.hidden = false;
+        if (error) error.hidden = true;
+        refresh();
+      })
+      .catch(() => {
+        if (error) {
+          error.hidden = false;
+          error.textContent = "Requirement post nahi ho payi. Server check karo.";
+        }
+      });
+  });
+
+  listEl.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-delete]");
+    if (!button) return;
+    deleteClient(button.getAttribute("data-delete")).then(refresh);
+  });
+
+  if (window.EventSource) {
+    const stream = new EventSource("/api/clients/stream");
+    stream.onmessage = () => {
+      refresh();
+    };
+  }
+  setInterval(refresh, 4000);
+  refresh();
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   initListPage();
   initViewPage();
+  initClientsPage();
 });

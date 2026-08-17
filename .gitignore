@@ -5,3 +5,4 @@ Thumbs.db
 *.png
 node_modules/
 data/demands.json
+data/clients.json
