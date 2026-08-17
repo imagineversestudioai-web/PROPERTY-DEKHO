@@ -88,15 +88,6 @@ app.post("/api/demands", (req, res) => {
   res.status(201).json(demand);
 });
 
-app.delete("/api/demands/:id", (req, res) => {
-  writeList(
-    "demands.json",
-    readList("demands.json").filter((item) => item.id !== req.params.id)
-  );
-  broadcast("demands");
-  res.json({ ok: true });
-});
-
 app.get("/api/clients", (_req, res) => {
   res.json(readList("clients.json"));
 });
@@ -118,15 +109,6 @@ app.post("/api/clients", (req, res) => {
   writeList("clients.json", list);
   broadcast("clients");
   res.status(201).json(client);
-});
-
-app.delete("/api/clients/:id", (req, res) => {
-  writeList(
-    "clients.json",
-    readList("clients.json").filter((item) => item.id !== req.params.id)
-  );
-  broadcast("clients");
-  res.json({ ok: true });
 });
 
 app.get("/api/health", (_req, res) => {

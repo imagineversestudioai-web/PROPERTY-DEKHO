@@ -41,10 +41,6 @@ async function cloudAdd(resource, item) {
   return withId(await res.json());
 }
 
-async function cloudDelete(resource, id) {
-  await fetch(`${CLOUD_API}/${resource}/${encodeURIComponent(id)}`, { method: "DELETE" });
-}
-
 async function loadDemands() {
   if (await hasLocalApi()) {
     const res = await fetch("/api/demands", { cache: "no-store" });
@@ -68,14 +64,6 @@ async function addDemand(demand) {
   return cloudAdd("demands", demand);
 }
 
-async function deleteDemand(id) {
-  if (await hasLocalApi()) {
-    await fetch(`/api/demands/${encodeURIComponent(id)}`, { method: "DELETE" });
-    return;
-  }
-  await cloudDelete("demands", id);
-}
-
 async function loadClients() {
   if (await hasLocalApi()) {
     const res = await fetch("/api/clients", { cache: "no-store" });
@@ -97,14 +85,6 @@ async function addClient(client) {
     return res.json();
   }
   return cloudAdd("clients", client);
-}
-
-async function deleteClient(id) {
-  if (await hasLocalApi()) {
-    await fetch(`/api/clients/${encodeURIComponent(id)}`, { method: "DELETE" });
-    return;
-  }
-  await cloudDelete("clients", id);
 }
 
 function listenLive(kind, onChange) {

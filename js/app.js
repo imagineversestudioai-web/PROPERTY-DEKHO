@@ -145,7 +145,6 @@ function renderCard(demand) {
           <h2>${escapeHtml(title)}</h2>
           ${sub ? `<p class="sub">${escapeHtml(sub)}</p>` : ""}
         </div>
-        <button class="btn btn-danger" type="button" data-delete="${escapeHtml(demand.id)}">Remove</button>
       </div>
       <dl class="facts">
         ${localityLine}
@@ -226,12 +225,6 @@ function initViewPage() {
     apply();
   });
 
-  listEl.addEventListener("click", (event) => {
-    const button = event.target.closest("[data-delete]");
-    if (!button) return;
-    deleteDemand(button.getAttribute("data-delete")).then(refresh);
-  });
-
   async function refresh() {
     cache = await loadDemands();
     apply();
@@ -253,7 +246,6 @@ function renderClientCard(item) {
           <h2>${escapeHtml(title)}</h2>
           ${sub ? `<p class="sub">${escapeHtml(sub)}</p>` : ""}
         </div>
-        <button class="btn btn-danger" type="button" data-delete="${escapeHtml(item.id)}">Remove</button>
       </div>
       ${item.requirement ? `<p class="note">${escapeHtml(item.requirement)}</p>` : ""}
     </article>
@@ -311,12 +303,6 @@ function initClientsPage() {
           error.textContent = "Requirement post nahi ho payi. Server check karo.";
         }
       });
-  });
-
-  listEl.addEventListener("click", (event) => {
-    const button = event.target.closest("[data-delete]");
-    if (!button) return;
-    deleteClient(button.getAttribute("data-delete")).then(refresh);
   });
 
   listenLive("clients", refresh);
