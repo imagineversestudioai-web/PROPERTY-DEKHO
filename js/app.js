@@ -131,7 +131,7 @@ function initListPage() {
         const error = document.getElementById("form-error");
         if (error) {
           error.hidden = false;
-          error.textContent = "Demand post nahi ho payi. Server chalu hai na, check karo.";
+          error.textContent = "Demand post nahi ho payi. Thodi der baad phir try karo.";
         }
       });
   });
@@ -249,9 +249,7 @@ function initViewPage() {
     apply();
   }
 
-  listenLive("demands", refresh);
-  setInterval(refresh, 4000);
-  refresh();
+  startLiveRefresh("demands", refresh);
 }
 
 function renderClientCard(item) {
@@ -324,9 +322,7 @@ function initClientsPage() {
       });
   });
 
-  listenLive("clients", refresh);
-  setInterval(refresh, 4000);
-  refresh();
+  startLiveRefresh("clients", refresh);
 }
 
 document.addEventListener("DOMContentLoaded", () => {

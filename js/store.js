@@ -1,4 +1,4 @@
-const CLOUD_API = "https://crudcrud.com/api/211e3cc6aba346419bd466117fef8c32";
+const CLOUD_API = "https://crudcrud.com/api/1590397c6a29478888ad263aededca2b";
 
 let localApi = null;
 
@@ -37,7 +37,10 @@ async function cloudAdd(resource, item) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
-  if (!res.ok) throw new Error("Could not save");
+  if (!res.ok) {
+    const detail = await res.text();
+    throw new Error(detail || "Could not save");
+  }
   return withId(await res.json());
 }
 
@@ -94,4 +97,15 @@ function listenLive(kind, onChange) {
     const stream = new EventSource(path);
     stream.onmessage = () => onChange();
   });
+}
+
+function startLiveRefresh(kind, refresh) {
+  listenLive(kind, refresh);
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") refresh();
+  });
+  setInterval(() => {
+    if (document.visibilityState === "visible") refresh();
+  }, 45000);
+  refresh();
 }
