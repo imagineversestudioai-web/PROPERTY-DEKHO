@@ -26,6 +26,28 @@ npx --yes serve .
 
 Then visit the printed local URL.
 
+## Deploy on Render
+
+This is a static site. No Node build.
+
+1. Open [Render Dashboard](https://dashboard.render.com/) and sign in with GitHub.
+2. Click **New → Static Site**.
+3. Connect `imagineversestudioai-web/PROPERTY-DEKHO`.
+4. Use these settings:
+
+   | Field | Value |
+   |---|---|
+   | **Name** | `property-dekho` |
+   | **Branch** | `main` |
+   | **Build Command** | leave empty, or `echo "No build step"` |
+   | **Publish Directory** | `.` |
+
+5. Click **Deploy Static Site**.
+
+Render gives a URL like `https://property-dekho.onrender.com`. Later pushes to `main` auto-deploy.
+
+You can also apply the included `render.yaml` Blueprint: **New → Blueprint** and select this repo.
+
 ## License
 
 MIT. See `LICENSE`.
