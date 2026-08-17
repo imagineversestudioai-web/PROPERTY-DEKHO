@@ -4,6 +4,10 @@ let localApi = null;
 
 async function hasLocalApi() {
   if (localApi !== null) return localApi;
+  if (location.hostname.includes("onrender.com")) {
+    localApi = false;
+    return false;
+  }
   try {
     const res = await fetch("/api/health", { cache: "no-store" });
     localApi = res.ok;
