@@ -18,60 +18,6 @@ const DOCUMENTS = [
   "Approved map",
 ];
 
-async function loadDemands() {
-  try {
-    const res = await fetch("/api/demands");
-    if (!res.ok) return [];
-    const data = await res.json();
-    return Array.isArray(data) ? data : [];
-  } catch {
-    return [];
-  }
-}
-
-async function addDemand(demand) {
-  const res = await fetch("/api/demands", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(demand),
-  });
-  if (!res.ok) throw new Error("Could not post demand");
-  return res.json();
-}
-
-async function deleteDemand(id) {
-  await fetch(`/api/demands/${encodeURIComponent(id)}`, { method: "DELETE" });
-}
-
-async function loadClients() {
-  try {
-    const res = await fetch("/api/clients");
-    if (res.status === 404) {
-      throw new Error("API_404");
-    }
-    if (!res.ok) return [];
-    const data = await res.json();
-    return Array.isArray(data) ? data : [];
-  } catch (err) {
-    if (err && err.message === "API_404") throw err;
-    return [];
-  }
-}
-
-async function addClient(client) {
-  const res = await fetch("/api/clients", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(client),
-  });
-  if (!res.ok) throw new Error("Could not post requirement");
-  return res.json();
-}
-
-async function deleteClient(id) {
-  await fetch(`/api/clients/${encodeURIComponent(id)}`, { method: "DELETE" });
-}
-
 function demandTitle(demand) {
   const written = String(demand.location || demand.city || "").trim();
   if (written && written.toLowerCase() !== "lucknow") return written;
@@ -291,12 +237,7 @@ function initViewPage() {
     apply();
   }
 
-  if (window.EventSource) {
-    const stream = new EventSource("/api/demands/stream");
-    stream.onmessage = () => {
-      refresh();
-    };
-  }
+  listenLive("demands", refresh);
   setInterval(refresh, 4000);
   refresh();
 }
@@ -344,21 +285,8 @@ function initClientsPage() {
   }
 
   async function refresh() {
-    try {
-      cache = await loadClients();
-      if (error && error.textContent === "Live API nahi mil rahi. Render pe Web Service chalao (Static Site nahi).") {
-        error.hidden = true;
-      }
-      apply();
-    } catch {
-      cache = [];
-      apply();
-      if (error) {
-        error.hidden = false;
-        error.textContent =
-          "Live API nahi mil rahi. Render pe Web Service chalao (Static Site nahi).";
-      }
-    }
+    cache = await loadClients();
+    apply();
   }
 
   form.addEventListener("submit", (event) => {
@@ -391,12 +319,7 @@ function initClientsPage() {
     deleteClient(button.getAttribute("data-delete")).then(refresh);
   });
 
-  if (window.EventSource) {
-    const stream = new EventSource("/api/clients/stream");
-    stream.onmessage = () => {
-      refresh();
-    };
-  }
+  listenLive("clients", refresh);
   setInterval(refresh, 4000);
   refresh();
 }
