@@ -673,6 +673,11 @@ button {
   margin: 14px 0 0;
 }
 
+.map-link {
+  margin-top: 14px;
+  width: fit-content;
+}
+
 .facts {
   display: flex;
   flex-wrap: wrap;

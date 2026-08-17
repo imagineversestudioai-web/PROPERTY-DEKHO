@@ -18,6 +18,19 @@ const DOCUMENTS = [
   "Approved map",
 ];
 
+function safeMapUrl(value) {
+  const raw = String(value || "").trim();
+  if (!raw) return "";
+  const withProtocol = /^[a-zA-Z][a-zA-Z+\-.]*:/.test(raw) ? raw : `https://${raw}`;
+  try {
+    const url = new URL(withProtocol);
+    if (url.protocol !== "http:" && url.protocol !== "https:") return "";
+    return url.href;
+  } catch {
+    return "";
+  }
+}
+
 function demandTitle(demand) {
   const written = String(demand.location || demand.city || "").trim();
   if (written && written.toLowerCase() !== "lucknow") return written;
@@ -106,6 +119,7 @@ function initListPage() {
       floor: type === "house" ? String(data.get("floor") || "").trim() : "",
       note: String(data.get("note") || "").trim(),
       contact: String(data.get("contact") || "").trim(),
+      mapLink: safeMapUrl(data.get("mapLink")),
       createdAt: new Date().toISOString(),
     };
 
@@ -157,6 +171,11 @@ function renderCard(demand) {
         ${fact("Contact", demand.contact)}
       </dl>
       ${demand.note ? `<p class="note">${escapeHtml(demand.note)}</p>` : ""}
+      ${
+        safeMapUrl(demand.mapLink)
+          ? `<a class="btn btn-ghost map-link" href="${escapeHtml(safeMapUrl(demand.mapLink))}" target="_blank" rel="noopener noreferrer">Open map</a>`
+          : ""
+      }
     </article>
   `;
 }

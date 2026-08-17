@@ -78,6 +78,11 @@ app.post("/api/demands", (req, res) => {
     floor: String(body.floor || "").trim(),
     note: String(body.note || "").trim(),
     contact: String(body.contact || "").trim(),
+    mapLink: String(body.mapLink || "")
+      .trim()
+      .replace(/^[a-zA-Z][a-zA-Z+\-.]*:/, (protocol) =>
+        /^https?:$/i.test(protocol) ? protocol : "https:"
+      ),
     id: crypto.randomUUID(),
     createdAt: new Date().toISOString(),
   };
