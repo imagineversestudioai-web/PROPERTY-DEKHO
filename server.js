@@ -8,7 +8,6 @@ const PORT = process.env.PORT || 4173;
 const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, "data");
 
 app.use(express.json({ limit: "200kb" }));
-app.use(express.static(__dirname));
 
 function filePath(name) {
   return path.join(DATA_DIR, name);
@@ -129,6 +128,12 @@ app.delete("/api/clients/:id", (req, res) => {
   broadcast("clients");
   res.json({ ok: true });
 });
+
+app.get("/api/health", (_req, res) => {
+  res.json({ ok: true, service: "property-dekho" });
+});
+
+app.use(express.static(__dirname));
 
 app.listen(PORT, () => {
   fs.mkdirSync(DATA_DIR, { recursive: true });

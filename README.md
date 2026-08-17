@@ -26,7 +26,11 @@ Open http://localhost:4173
 
 ## Deploy on Render
 
-This is now a **Web Service** (not a static site), because listings are shared.
+**`/api/clients` 404 means Render is still a Static Site.** HTML files are served, but `node server.js` never runs, so every `/api/*` route is missing.
+
+Delete the Static Site (the one like `property-dekho-skd9`), then create a **Web Service**.
+
+This is a **Web Service** (not a static site), because listings are shared.
 
 1. Open [Render Dashboard](https://dashboard.render.com/)
 2. **New → Web Service**

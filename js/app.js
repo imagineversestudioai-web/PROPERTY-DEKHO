@@ -46,10 +46,14 @@ async function deleteDemand(id) {
 async function loadClients() {
   try {
     const res = await fetch("/api/clients");
+    if (res.status === 404) {
+      throw new Error("API_404");
+    }
     if (!res.ok) return [];
     const data = await res.json();
     return Array.isArray(data) ? data : [];
-  } catch {
+  } catch (err) {
+    if (err && err.message === "API_404") throw err;
     return [];
   }
 }
@@ -340,8 +344,21 @@ function initClientsPage() {
   }
 
   async function refresh() {
-    cache = await loadClients();
-    apply();
+    try {
+      cache = await loadClients();
+      if (error && error.textContent === "Live API nahi mil rahi. Render pe Web Service chalao (Static Site nahi).") {
+        error.hidden = true;
+      }
+      apply();
+    } catch {
+      cache = [];
+      apply();
+      if (error) {
+        error.hidden = false;
+        error.textContent =
+          "Live API nahi mil rahi. Render pe Web Service chalao (Static Site nahi).";
+      }
+    }
   }
 
   form.addEventListener("submit", (event) => {
