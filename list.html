@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>List a demand — LUCKNOW SCR</title>
+    <meta name="description" content="List a house or land demand in Lucknow." />
+    <link rel="icon" href="images/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body class="page form-page">
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="wrap">
+      <nav class="nav" aria-label="Primary">
+        <a class="brand" href="index.html">LUCKNOW <span>SCR</span></a>
+        <div class="nav-links">
+          <a href="list.html" aria-current="page">List</a>
+          <a href="view.html">View property</a>
+        </div>
+      </nav>
+    </header>
+    <main id="main" class="wrap">
+      <div class="page-head">
+        <p class="eyebrow">New demand</p>
+        <h1>What are you looking for?</h1>
+      </div>
+      <form id="demand-form" class="panel" novalidate>
+        <p id="form-error" class="alert error" hidden tabindex="-1"></p>
+        <div class="form-grid">
+          <div class="field wide">
+            <label for="location">Location</label>
+            <input
+              id="location"
+              name="location"
+              placeholder="Any place — this is the title"
+              autocomplete="off"
+            />
+          </div>
+          <div class="field">
+            <label for="type">Type</label>
+            <select id="type" name="type">
+              <option value="house">House</option>
+              <option value="land">Land</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="intent">Intent</label>
+            <select id="intent" name="intent">
+              <option value="buy">Buy</option>
+              <option value="rent">Rent</option>
+            </select>
+          </div>
+          <div class="field" id="bhk-field">
+            <label for="bhk">BHK</label>
+            <select id="bhk" name="bhk">
+              <option value="">Optional</option>
+              <option value="1 BHK">1 BHK</option>
+              <option value="2 BHK">2 BHK</option>
+              <option value="3 BHK">3 BHK</option>
+              <option value="4 BHK">4 BHK</option>
+              <option value="5 BHK">5 BHK</option>
+              <option value="5+ BHK">5+ BHK</option>
+            </select>
+          </div>
+          <div class="field" id="floor-field">
+            <label for="floor">Floor</label>
+            <select id="floor" name="floor">
+              <option value="">Optional</option>
+              <option value="Ground">Ground</option>
+              <option value="1st">1st</option>
+              <option value="2nd">2nd</option>
+              <option value="3rd">3rd</option>
+              <option value="4th">4th</option>
+              <option value="5th">5th</option>
+              <option value="6th+">6th+</option>
+              <option value="Top floor">Top floor</option>
+              <option value="Any floor">Any floor</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="locality">Locality</label>
+            <input id="locality" name="locality" list="locality-list" placeholder="Optional locality" autocomplete="off" />
+            <datalist id="locality-list"></datalist>
+          </div>
+          <div class="field">
+            <label for="landmark">Landmark</label>
+            <input id="landmark" name="landmark" placeholder="Near Phoenix Palassio" />
+          </div>
+          <div class="field">
+            <label for="area">Area</label>
+            <input id="area" name="area" placeholder="1200 sq ft or 200 gaj" />
+          </div>
+          <div class="field">
+            <label for="facing">Facing</label>
+            <select id="facing" name="facing"></select>
+          </div>
+          <div class="field">
+            <label for="frontArea">Front area</label>
+            <input id="frontArea" name="frontArea" placeholder="30 ft" />
+          </div>
+          <div class="field">
+            <label for="backArea">Back area</label>
+            <input id="backArea" name="backArea" placeholder="28 ft" />
+          </div>
+          <div class="field">
+            <label for="document">Document</label>
+            <select id="document" name="document"></select>
+          </div>
+          <div class="field">
+            <label for="caste">Caste</label>
+            <input id="caste" name="caste" placeholder="Optional" />
+          </div>
+          <div class="field">
+            <label for="rate">Rate</label>
+            <input id="rate" name="rate" placeholder="₹ 6,500 / sq ft" />
+          </div>
+          <div class="field">
+            <label for="budget">Budget</label>
+            <input id="budget" name="budget" placeholder="₹ 80 lakh" />
+          </div>
+          <div class="field wide">
+            <label for="note">Note</label>
+            <textarea id="note" name="note" rows="2" placeholder="Anything else a seller should know"></textarea>
+          </div>
+          <div class="field wide">
+            <label for="contact">Contact</label>
+            <input id="contact" name="contact" placeholder="Phone or email" />
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn btn-primary" type="submit">Post demand</button>
+          <a class="btn btn-ghost" href="view.html">Cancel</a>
+        </div>
+      </form>
+    </main>
+    <script src="js/localities.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>
