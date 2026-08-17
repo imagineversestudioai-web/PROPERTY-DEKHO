@@ -773,20 +773,42 @@ button {
     min-height: 40px;
   }
 
+  body.hero {
+    height: auto;
+    min-height: 100dvh;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .hero > main.wrap {
+    flex: none;
+    justify-content: flex-start;
+    padding-bottom: 28px;
+  }
+
   .nav {
-    flex-wrap: nowrap;
-    gap: 10px;
-    padding: 16px 0;
+    flex-direction: column;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 14px 0;
   }
 
   .brand {
-    font-size: 0.82rem;
-    letter-spacing: 0.1em;
+    white-space: nowrap;
+    font-size: 0.95rem;
+    letter-spacing: 0.12em;
+  }
+
+  .nav-links {
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 6px;
   }
 
   .nav-links a {
-    padding: 0 10px;
-    font-size: 0.68rem;
+    padding: 0 12px;
+    font-size: 0.72rem;
   }
 
   .hero h1,
@@ -803,18 +825,33 @@ button {
   }
 
   .hero .choice-grid {
-    grid-template-columns: 1fr 1fr 1fr;
-    max-height: 210px;
-    gap: 8px;
+    grid-template-columns: 1fr;
+    max-height: none;
+    gap: 12px;
   }
 
   .hero .choice {
-    padding: 14px 12px;
+    padding: 18px 16px;
+    min-height: 148px;
   }
 
   .hero .choice p {
-    font-size: 0.78rem;
-    line-height: 1.35;
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+
+  .hero .choice h2 {
+    font-size: 1.5rem;
+  }
+
+  .form-page .actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .form-page .actions .btn,
+  .form-page .actions a.btn {
+    width: 100%;
   }
 
   .hero .lead {
