@@ -1,52 +1,53 @@
 # PROPERTY DEKHO — LUCKNOW SCR
 
-Open-source static board for Lucknow property demand. Anyone can list what they are looking for and browse every demand saved in their browser.
+Live open board for Lucknow property demand. Anyone can list what they want. Everyone sees the same live list.
 
-No server. No account.
+No account. No sample listings.
 
 ## Pages
 
-- `index.html` — landing with two actions: **List** and **View property**
+- `index.html` — landing: **List** and **View property**
 - `list.html` — post a house or land demand
-- `view.html` — browse and filter by house, land, and locality
+- `view.html` — live list, filters, auto-refresh
 
 ## How listings are stored
 
-Demands are saved in `localStorage` under `lucknow-scr-demands`. They stay on that device and browser. Other people do not see them.
-
-The first visit seeds a few sample Lucknow listings so the board is not empty.
+Demands are saved on the server (`data/demands.json`) and pushed to every open View page in real time (SSE + 4s poll). There is no seed data. An empty board stays empty until someone posts.
 
 ## Run locally
 
-Open `index.html` in a browser, or serve the folder:
-
 ```bash
-npx --yes serve .
+npm install
+npm start
 ```
 
-Then visit the printed local URL.
+Open http://localhost:4173
 
 ## Deploy on Render
 
-This is a static site. No Node build.
+This is now a **Web Service** (not a static site), because listings are shared.
 
-1. Open [Render Dashboard](https://dashboard.render.com/) and sign in with GitHub.
-2. Click **New → Static Site**.
-3. Connect `imagineversestudioai-web/PROPERTY-DEKHO`.
-4. Use these settings:
+1. Open [Render Dashboard](https://dashboard.render.com/)
+2. **New → Web Service**
+3. Connect `imagineversestudioai-web/PROPERTY-DEKHO`
+4. Settings:
 
    | Field | Value |
    |---|---|
-   | **Name** | `property-dekho` |
-   | **Branch** | `main` |
-   | **Build Command** | leave empty, or `echo "No build step"` |
-   | **Publish Directory** | `.` |
+   | **Runtime** | Node |
+   | **Build Command** | `npm install` |
+   | **Start Command** | `npm start` |
+   | **Instance** | Free |
 
-5. Click **Deploy Static Site**.
+5. Optional but recommended: add a **persistent disk**
+   - Mount path: `/var/data`
+   - Env var: `DATA_DIR` = `/var/data`
 
-Render gives a URL like `https://property-dekho.onrender.com`. Later pushes to `main` auto-deploy.
+   Without a disk, listings reset when Render restarts the free instance.
 
-You can also apply the included `render.yaml` Blueprint: **New → Blueprint** and select this repo.
+6. Deploy. Later pushes to `main` auto-deploy.
+
+If you already created a **Static Site**, delete it and create a **Web Service** instead. Static hosting cannot store shared live data.
 
 ## License
 

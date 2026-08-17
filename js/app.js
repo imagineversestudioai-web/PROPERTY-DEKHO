@@ -1,5 +1,3 @@
-const STORAGE_KEY = "lucknow-scr-demands";
-
 const FACINGS = [
   "North",
   "South",
@@ -20,126 +18,29 @@ const DOCUMENTS = [
   "Approved map",
 ];
 
-const SEED = [
-  {
-    id: "seed-1",
-    location: "Gomti Nagar",
-    city: "Gomti Nagar",
-    type: "house",
-    intent: "buy",
-    locality: "Gomti Nagar",
-    landmark: "Near Phoenix Palassio",
-    area: "1200 sq ft",
-    frontArea: "30 ft",
-    backArea: "28 ft",
-    facing: "East",
-    document: "Registry",
-    caste: "",
-    rate: "₹ 6,500 / sq ft",
-    budget: "₹ 80 lakh",
-    bhk: "3 BHK",
-    floor: "2nd",
-    note: "Quiet street, parking for one car.",
-    contact: "98100 11111",
-    createdAt: "2026-08-01T10:00:00.000Z",
-  },
-  {
-    id: "seed-2",
-    location: "Aliganj",
-    city: "Aliganj",
-    type: "land",
-    intent: "buy",
-    locality: "Aliganj",
-    landmark: "Near Engineering College",
-    area: "200 gaj",
-    frontArea: "40 ft",
-    backArea: "45 ft",
-    facing: "North",
-    document: "Registry",
-    caste: "",
-    rate: "₹ 22,000 / gaj",
-    budget: "₹ 45 lakh",
-    bhk: "",
-    floor: "",
-    note: "Need clear title and road access.",
-    contact: "98100 22222",
-    createdAt: "2026-08-03T09:00:00.000Z",
-  },
-  {
-    id: "seed-3",
-    location: "Hazratganj",
-    city: "Hazratganj",
-    type: "house",
-    intent: "rent",
-    locality: "Hazratganj",
-    landmark: "Near Novelty Cinema",
-    area: "1450 sq ft",
-    frontArea: "22 ft",
-    backArea: "20 ft",
-    facing: "North",
-    document: "Agreement",
-    caste: "",
-    rate: "₹ 25,000 / mo",
-    budget: "₹ 25,000 / mo",
-    bhk: "3 BHK",
-    floor: "1st",
-    note: "Family only, prefer first or second floor.",
-    contact: "98100 33333",
-    createdAt: "2026-08-08T14:00:00.000Z",
-  },
-  {
-    id: "seed-4",
-    location: "Sushant Golf City",
-    city: "Sushant Golf City",
-    type: "land",
-    intent: "buy",
-    locality: "Sushant Golf City",
-    landmark: "Near Shaheed Path",
-    area: "300 gaj",
-    frontArea: "50 ft",
-    backArea: "54 ft",
-    facing: "South-East",
-    document: "Freehold",
-    caste: "",
-    rate: "₹ 18,000 / gaj",
-    budget: "₹ 55 lakh",
-    bhk: "",
-    floor: "",
-    note: "Looking for a corner plot.",
-    contact: "98100 44444",
-    createdAt: "2026-08-10T11:30:00.000Z",
-  },
-];
-
-function loadDemands() {
+async function loadDemands() {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(SEED));
-      return [...SEED];
-    }
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [...SEED];
+    const res = await fetch("/api/demands");
+    if (!res.ok) return [];
+    const data = await res.json();
+    return Array.isArray(data) ? data : [];
   } catch {
-    return [...SEED];
+    return [];
   }
 }
 
-function saveDemands(list) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+async function addDemand(demand) {
+  const res = await fetch("/api/demands", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(demand),
+  });
+  if (!res.ok) throw new Error("Could not post demand");
+  return res.json();
 }
 
-function addDemand(demand) {
-  const list = loadDemands();
-  list.unshift(demand);
-  saveDemands(list);
-  return list;
-}
-
-function deleteDemand(id) {
-  const list = loadDemands().filter((item) => item.id !== id);
-  saveDemands(list);
-  return list;
+async function deleteDemand(id) {
+  await fetch(`/api/demands/${encodeURIComponent(id)}`, { method: "DELETE" });
 }
 
 function demandTitle(demand) {
@@ -233,8 +134,17 @@ function initListPage() {
       createdAt: new Date().toISOString(),
     };
 
-    addDemand(demand);
-    window.location.href = "view.html?posted=1";
+    addDemand(demand)
+      .then(() => {
+        window.location.href = "view.html?posted=1";
+      })
+      .catch(() => {
+        const error = document.getElementById("form-error");
+        if (error) {
+          error.hidden = false;
+          error.textContent = "Demand post nahi ho payi. Server chalu hai na, check karo.";
+        }
+      });
   });
 }
 
@@ -290,9 +200,10 @@ function initViewPage() {
 
   let typeFilter = "all";
   let localityFilter = "";
+  let cache = [];
 
   function apply() {
-    const all = loadDemands();
+    const all = cache;
     const localities = filterPlaces(all);
     const current = localitySelect.value;
     localitySelect.innerHTML =
@@ -312,7 +223,7 @@ function initViewPage() {
     });
 
     if (countEl) {
-      countEl.textContent = `${filtered.length} demand${filtered.length === 1 ? "" : "s"} in this browser`;
+      countEl.textContent = `${filtered.length} live demand${filtered.length === 1 ? "" : "s"}`;
     }
 
     if (!filtered.length) {
@@ -343,11 +254,22 @@ function initViewPage() {
   listEl.addEventListener("click", (event) => {
     const button = event.target.closest("[data-delete]");
     if (!button) return;
-    deleteDemand(button.getAttribute("data-delete"));
-    apply();
+    deleteDemand(button.getAttribute("data-delete")).then(refresh);
   });
 
-  apply();
+  async function refresh() {
+    cache = await loadDemands();
+    apply();
+  }
+
+  if (window.EventSource) {
+    const stream = new EventSource("/api/demands/stream");
+    stream.onmessage = () => {
+      refresh();
+    };
+  }
+  setInterval(refresh, 4000);
+  refresh();
 }
 
 document.addEventListener("DOMContentLoaded", () => {

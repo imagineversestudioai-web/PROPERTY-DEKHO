@@ -3,3 +3,5 @@
 .DS_Store
 Thumbs.db
 *.png
+node_modules/
+data/demands.json
