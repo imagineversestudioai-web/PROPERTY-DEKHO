@@ -1,8 +1,8 @@
 {
-  "name": "property-dekho",
+  "name": "propertydekho",
   "version": "1.0.0",
   "private": true,
-  "description": "LUCKNOW SCR live property demand board",
+  "description": "PropertyDekho live property demand board",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

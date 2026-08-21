@@ -1,4 +1,4 @@
-# PROPERTY DEKHO — LUCKNOW SCR
+# PropertyDekho
 
 Live open board for Lucknow property demand. Anyone can list what they want. Everyone sees the same live list.
 
@@ -28,13 +28,13 @@ Open http://localhost:4173
 
 **`/api/clients` 404 means Render is still a Static Site.** HTML files are served, but `node server.js` never runs, so every `/api/*` route is missing.
 
-Delete the Static Site (the one like `property-dekho-skd9`), then create a **Web Service**.
+Delete the Static Site (the one like `propertydekho-skd9`), then create a **Web Service**.
 
 This is a **Web Service** (not a static site), because listings are shared.
 
 1. Open [Render Dashboard](https://dashboard.render.com/)
 2. **New → Web Service**
-3. Connect `imagineversestudioai-web/PROPERTY-DEKHO`
+3. Connect `imagineversestudioai-web/PropertyDekho`
 4. Settings:
 
    | Field | Value |
